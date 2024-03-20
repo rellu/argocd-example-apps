@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: pod-query-analysis
+spec:
+  args:
+    - name: service-name
+      description: The name of the service to query
+      required: true
+    # - name: service-port
+    #   description: The port of the service to query
+    #   value: "80"
+  metrics:
+  - name: test
+    provider:
+      job:
+        spec:
+          backoffLimit: 1
+          template:
+            spec:
+              containers:
+              - name: test
+                image: busybox
+                command: ["sh", "-c", "wget -qO- {{args.service-name}}:80"]
+              restartPolicy: Never

@@ -12,6 +12,7 @@ spec:
     kind: Deployment
     name: kustomize-guestbook-ui
   minReadySeconds: 30
+  progressDeadlineAbort: true
   rollbackWindow:
     revisions: 3
   revisionHistoryLimit: 3
@@ -23,3 +24,12 @@ spec:
       - setWeight: 50
       - pause:
           duration: 1m
+      # doesn't work like this if pod goes into crashloop
+      # query should target the canary pod not the service
+      # - analysis:
+      #     templates:
+      #     - templateName: kustomize-pod-query-analysis
+      #     args:
+      #     - name: service-name
+      #       # hardcoded to "test" should be "stg" staging.
+      #       value: kustomize-guestbook-ui.test.svc.cluster.local
